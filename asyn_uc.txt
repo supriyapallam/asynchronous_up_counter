@@ -1,0 +1,46 @@
+//Design Code
+module downcount(input reset,clk, output reg [1:0]q);
+  always@(posedge clk or posedge reset)
+    begin
+      if(reset)
+        q[0]<=1'b0;
+      else
+        q[0]<=~q[0];
+    end
+  always@(posedge ~q[0] or posedge reset)
+    begin
+      if(reset)
+        q[1]<=1'b0;
+      else
+        q[1]<=~q[1];
+    end
+endmodule
+
+//Test Bench Code
+module tb();
+  reg reset,clk;
+  wire [1:0]q;
+  downcount dut(reset,clk,q);
+  initial
+    begin
+      clk=1'b0;
+      forever #5 clk=~clk;
+    end
+  initial
+    begin
+      reset=1'b1;
+      #10;
+      reset=1'b0;
+      #100;
+      $finish;
+    end
+  initial
+    begin
+      $monitor("q=%0d",q);
+    end
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+endmodule
